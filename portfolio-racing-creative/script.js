@@ -43,3 +43,22 @@ if (reduceMotion) {
   }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
   revealEls.forEach(el => revealObserver.observe(el));
 }
+
+// Contador de visitas privado (conta visitas e visitantes únicos; ignora o dono e localhost)
+(function () {
+  const NS = 'mrp-a63bdeab00199649';
+  const base = 'https://abacus.jasoncameron.dev/hit/' + NS + '/';
+  try {
+    if (location.search.includes('owner')) localStorage.setItem('mr-owner', '1');
+    if (localStorage.getItem('mr-owner')) return;
+    if (['localhost', '127.0.0.1'].includes(location.hostname)) return;
+    if (!sessionStorage.getItem('mr-counted')) {
+      sessionStorage.setItem('mr-counted', '1');
+      fetch(base + 'visitas', { keepalive: true }).catch(() => {});
+    }
+    if (!localStorage.getItem('mr-seen')) {
+      localStorage.setItem('mr-seen', '1');
+      fetch(base + 'unicos', { keepalive: true }).catch(() => {});
+    }
+  } catch (e) {}
+})();
